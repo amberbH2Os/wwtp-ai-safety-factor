@@ -1,0 +1,25 @@
+Methodology for AI-Evaluated Safety Factors in Wastewater Treatment Plant Design
+
+This document outlines the updated methodology for using AI to evaluate and refine safety factors in WWTP design, based on literature and the provided raw data (e.g., flows, peaking factors, BOD limits). It integrates ML models like LSTM/Transformers for forecasting, ensuring compliance with engineering standards (e.g., EPA secondary treatment: BOD ≤30 mg/L monthly, ≥85% removal).
+
+Key Principles
+
+- Risk-Based Design: Factors account for uncertainties (e.g., influent variability ±40%, peaking 1.5–4.0 from data) while minimizing overcapacity (10–25% savings).
+- Data-Driven: Use table metrics for distributions; synthetic time-series for ML training.
+- Resilience: Include climate uplift (+20–30%) and compliance checks (e.g., effluent <30 mg/L).
+- ML Integration: Forecast variables, then simulate risks via Monte Carlo (5,000–10,000 iterations) for >95% reliability.
+
+Step-by-Step Process
+
+1. Data Compilation: Extract from raw table (e.g., average/peak flows, BOD limits). Generate synthetic time-series (e.g., normal/gamma dist) based on means/std devs.
+2. ML Forecasting: Train models (e.g., LSTM/Transformer) on sequences (lookback 30 days) for predictions (e.g., next 365–7300 days). Use PyTorch; 10–50 epochs, MSE loss, Adam optimizer.
+3. Uncertainty Quantification: Apply Monte Carlo on forecasts: Sample from dist (normal for flows/loads, gamma for extremes); incorporate upsets (10% probability, 1.5x multiplier) and uplift.
+4. Optimization & Factor Calculation: Filter simulations for compliance (e.g., removal ≥85%, effluent < limits); compute percentiles (95th/99th) as updated factors. Minimize via risk thresholds.
+5. Validation: Compare against table sources (e.g., NPDES permits) and literature (e.g., Metcalf & Eddy). Iterate with site-specific data for pilots.
+
+ Category-Specific Adaptations
+
+- Hydraulic: Transformer for peak forecasting; factor 1.3–2.5.
+- Biological: XGBoost/LSTM for BOD; factor 1.1–1.4, ensure <30 mg/L.
+- Structural: CNN-LSTM for loads; factor 1.5–3.5.
+- Capacity: ANN for projections; probabilistic factor ~1.1.
